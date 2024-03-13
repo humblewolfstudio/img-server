@@ -1,10 +1,20 @@
-html,
-body {
-    height: 100%;
-    margin-inline: 200px;
-    padding: 0;
+@media only screen and (min-width: 600px) {
+
+    html,
+    body {
+        height: 100%;
+        margin-inline: 200px;
+        padding: 0;
+    }
+
+    .content {
+        padding-inline: 30px;
+    }
 }
 
-.content {
-    padding-inline: 30px;
+@media only screen and (max-width: 600px) {
+
+    .content {
+        padding-inline: 15px;
+    }
 }

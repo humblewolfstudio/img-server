@@ -1,5 +1,6 @@
 const { getImagesInfo } = require("../../database/image");
 const { getInfo } = require("../../database/user");
+const { handleError } = require("../aux");
 const helper = require('./helper');
 
 const controller = {};
@@ -75,7 +76,7 @@ controller.dashboard = async (req, res) => {
         };
         res.render('dashboard', data);
     } catch (e) {
-        helper.handleError(e, res);
+        handleError(e, res);
     }
 }
 

@@ -7,12 +7,15 @@
 
 <body>
     <div><%- include('../partials/navbar'); %></div>
-    <h1>
-        <%= status %>
-    </h1>
-    <h6>
-        <%= message %>
-    </h6>
+    <div class="content d-flex flex-column align-items-center justify-content-center h-100">
+        <h1>
+            <%= status %>
+        </h1>
+        <h6 class="mb-5">
+            <%= message %>
+        </h6>
+        <input class="btn btn-primary mt-5" action="action" onclick="window.history.go(-1); return false;" type="submit" value="Go back" />
+    </div>
 </body>
 
 </html>

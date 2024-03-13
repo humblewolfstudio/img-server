@@ -7,4 +7,19 @@ const handleException = (e, res) => {
     }
 }
 
-module.exports = { handleException }
+const handleError = (e, res) => {
+    var data;
+    if (e.status) {
+        data = e;
+    } else {
+        console.error(e);
+        data = { status: 500, message: 'Internal server error' };
+    }
+
+    data.pageTitle = 'Error';
+    data.user = null;
+
+    res.render('error', data);
+}
+
+module.exports = { handleException, handleError }

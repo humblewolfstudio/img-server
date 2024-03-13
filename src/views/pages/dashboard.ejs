@@ -2,149 +2,185 @@
 <html lang="en">
 
 <head>
-    <%- include('../partials/head'); %>
+  <%- include('../partials/head'); %>
 </head>
 <style>
-    html,
-    body {
-        height: 100%;
-    }
+  html,
+  body {
+    height: 100%;
+  }
 
-    .full-height-container {
-        min-height: 90vh;
-    }
+  .full-height-container {
+    min-height: 90vh;
+  }
 
-    .menu-item {
-        cursor: pointer;
-    }
+  .menu-item {
+    cursor: pointer;
+  }
 
-    .menu-item.active {
-        background-color: #007bff;
-        color: #fff;
-    }
+  .menu-item.active {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .label {
+    display: inline-flex;
+    color: var(--text-color);
+    overflow-y: hidden;
+    overflow-x: auto;
+
+    scrollbar-width: auto;
+    scrollbar-color: var(--correct-color) #ffffff;
+  }
+
+  .labelRemember {
+    margin-top: 25px;
+    display: flex;
+    color: var(--text-color);
+    max-width: 80vw;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    font-size: 14px;
+  }
+
+  .token {
+    margin-left: 10px;
+    background-color: rgb(232, 255, 247);
+    padding-inline: 10px;
+    justify-content: center;
+    border-radius: 20px;
+  }
+
+  .token:hover {
+    cursor: pointer;
+  }
+
+  .content {
+    overflow: hidden;
+  }
+
+  .table-container {
+    max-width: 100%;
+    overflow: scroll;
+  }
 </style>
 
 <body class="">
-    <div><%- include('../partials/navbar'); %></div>
-    <div class="container-fluid full-height-container">
-        <div class="row full-height-container">
-            <div class="col-3 pt-5">
-                <ul class="list-group">
-                    <li class="list-group-item menu-item" data-target="content1">Usage/Images</li>
-                    <li class="list-group-item menu-item" data-target="content2">Profile</li>
-                    <li class="list-group-item menu-item" data-target="content3">Token</li>
-                </ul>
+  <div><%- include('../partials/navbar'); %></div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 pt-5">
+        <ul class="list-group">
+          <li class="list-group-item menu-item" data-target="content1">Usage/Images</li>
+          <li class="list-group-item menu-item" data-target="content2">Profile</li>
+          <li class="list-group-item menu-item" data-target="content3">Token</li>
+        </ul>
+      </div>
+      <div class="col-md-9 pt-5">
+        <div id="content1" class="content" style="display: none;">
+          <%- include('../partials/dashboard-usage'); %>
+          <%- include('../partials/dashboard-modal'); %>
+          <%- include('../partials/dashboard-confirmationModal'); %>
+          <%- include('../partials/dashboard-table'); %>
+          <div id="content2" class="content" style="display: none;">
+            <%- include('../partials/dashboard-profile'); %>
+          </div>
+          <div id="content3" class="content" style="display: none;">
+            <h2 class="mb-1">Token</h2>
+            <p class="mb-5">Here you can generate (or regenerate if already generated) your token for your app usage</p>
+            <div class="d-flex flex-column justify-content-center align-items-start" id="tokenWrapper">
+              <% if (userInfo.token) { %>
+              <button class="btn btn-primary" onClick="apiKey()">Regenerate API key</button>
+              <% } else { %>
+              <button class="btn btn-primary" onClick="apiKey()">Get API key</button>
+              <% } %>
             </div>
-            <div class="col-9 pt-5">
-                <div id="content1" class="content" style="display: none;">
-                    <%- include('../partials/dashboard-usage'); %>
-                        <%- include('../partials/dashboard-modal'); %>
-                            <%- include('../partials/dashboard-confirmationModal'); %>
-                                <div class="mt-5 d-flex justify-content-between align-items-center">
-                                    <h2>Images</h2>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#uploadModal">
-                                        Upload Image
-                                    </button>
-                                </div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Content-Type</th>
-                                            <th scope="col">Timestamp</th>
-                                            <th scope="col">Size</th>
-                                            <th scope="col">Link</th>
-                                            <th scope="col">Delete</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% for(var i=0; i < imagesInfo.length; i++) { %>
-                                            <tr>
-                                                <td>
-                                                    <%= imagesInfo[i].name %>
-                                                </td>
-                                                <td>
-                                                    <%= imagesInfo[i].contentType %>
-                                                </td>
-                                                <td>
-                                                    <%= new Date(imagesInfo[i].timestamp).toLocaleString(); %>
-                                                </td>
-                                                <td>
-                                                    <%= helper.bytesToKilobytes(imagesInfo[i].size) %>Kb
-                                                </td>
-                                                <td>
-                                                    <a href="/api/image/<%= imagesInfo[i].id %>" target="_blank"
-                                                        rel="noopener noreferrer">View</a>
-                                                </td>
-                                                <td>
-                                                    <a href="#" data-toggle="modal" data-target="#confirmationModal"
-                                                        data-id="<%= imagesInfo[i].id %>">Delete</a>
-                                                </td>
-                                            </tr>
-                                            <% } %>
-                                    </tbody>
-                                </table>
-                                <ul class="pagination d-flex justify-content-between">
-                                    <li class="page-item"><a class="page-link"
-                                            href="/dashboard?c=1&s=<%= skip-10<0 ? 0 : skip - 10 %>">Previous</a></li>
-                                    <li class="page-item"><a class="page-link"
-                                            href="/dashboard?c=1&s=<%= end ? skip : skip + 10 %>">Next</a></li>
-                                </ul>
-                </div>
-                <div id="content2" class="content" style="display: none;">
-                    <%- include('../partials/dashboard-profile'); %>
-                </div>
-                <div id="content3" class="content" style="display: none;">
-                    <h2>Content 3</h2>
-                    <p>This is the content for section 3.</p>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
 </body>
 <script>
-    $(document).ready(function () {
-        $('.menu-item').click(function () {
-            $('.content').hide();
+  $(document).ready(function() {
+    $('.menu-item').click(function() {
+      $('.content').hide();
 
-            $('.menu-item').removeClass('active');
-            $(this).addClass('active');
+      $('.menu-item').removeClass('active');
+      $(this).addClass('active');
 
-            $('#' + $(this).data('target')).show();
-        });
+      $('#' + $(this).data('target')).show();
     });
+  });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const params = new URLSearchParams(window.location.search);
-        const contentToShow = params.get('c');
+  document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const contentToShow = params.get('c');
 
-        const contents = document.querySelectorAll('.content');
+    const contents = document.querySelectorAll('.content');
 
-        const menuItems = document.querySelectorAll('.menu-item');
+    const menuItems = document.querySelectorAll('.menu-item');
 
-        if (contentToShow) {
-            const targetContent = document.getElementById(`content${contentToShow}`);
-            const targetMenuItem = document.querySelector(`.menu-item[data-target="content${contentToShow}"]`);
+    if (contentToShow) {
+      const targetContent = document.getElementById(`content${contentToShow}`);
+      const targetMenuItem = document.querySelector(`.menu-item[data-target="content${contentToShow}"]`);
 
-            if (targetContent && targetMenuItem) {
-                targetContent.style.display = 'block';
-                targetMenuItem.classList.add('active');
-            } else {
-                selectDefault();
-            }
-        } else {
-            selectDefault();
-        }
-    });
-
-    const selectDefault = () => {
-        const content = document.querySelector('.content');
-        const menuItem = document.querySelector('.menu-item');
-
-        content.style.display = 'block';
-        menuItem.classList.add('active');
+      if (targetContent && targetMenuItem) {
+        targetContent.style.display = 'block';
+        targetMenuItem.classList.add('active');
+      } else {
+        selectDefault();
+      }
+    } else {
+      selectDefault();
     }
+  });
+
+  const selectDefault = () => {
+    const content = document.querySelector('.content');
+    const menuItem = document.querySelector('.menu-item');
+
+    content.style.display = 'block';
+    menuItem.classList.add('active');
+  }
+
+  function apiKey() {
+    fetch('/api/users/token', {
+      method: 'get'
+    }).then(async (data) => {
+      const token = await data.text();
+      changeToken(token);
+    }).catch((err) => {
+      console.error(err);
+    })
+  }
+
+  function changeToken(token) {
+    const wrapper = document.querySelector('#tokenWrapper');
+
+    const div = document.createElement('div');
+    div.className = 'd-flex flex-row align-items-center'
+
+    const labelTitle = document.createElement('h6');
+    labelTitle.innerHTML = "Your token:"
+    labelTitle.className = 'label';
+
+    const labelToken = document.createElement('label');
+    labelToken.innerHTML = token;
+    labelToken.onclick = function() {
+      navigator.clipboard.writeText(token);
+    };
+    labelToken.className = 'label token';
+
+    const labelWarning = document.createElement('label');
+    labelWarning.innerHTML = "Remember to copy and save this key, as if you want to retrieve again it will change and the previous one wont work";
+    labelWarning.className = 'labelRemember';
+
+    div.append(labelTitle);
+    div.append(labelToken);
+
+    wrapper.replaceChildren(div);
+    wrapper.append(labelWarning);
+  }
 </script>
 
 </html>

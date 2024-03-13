@@ -1,5 +1,5 @@
 const { registerUser, loginUser, getToken, changePassword, changeEmail } = require("../../database/user");
-const { handleException } = require("../aux");
+const { handleError } = require("../aux");
 
 const controller = {};
 
@@ -21,7 +21,7 @@ controller.register = async (req, res) => {
             });
         });
     } catch (e) {
-        handleException(e, res);
+        handleError(e, res);
     }
 }
 
@@ -43,14 +43,14 @@ controller.login = async (req, res) => {
             });
         });
     } catch (e) {
-        handleException(e, res);
+        handleError(e, res);
     }
 }
 
 controller.logOut = async (req, res) => {
     req.session.destroy(err => {
         if (err) {
-            res.status(400).send('Unable to log out')
+            handleError({ status: 400, message: 'Unable to log out' }, res);
         } else {
             res.redirect('/');
         }
@@ -67,7 +67,7 @@ controller.getToken = async (req, res) => {
         res.status(200).send(token);
 
     } catch (e) {
-        handleException(e, res);
+        handleError(e, res);
     }
 }
 
@@ -83,7 +83,7 @@ controller.changePassword = async (req, res) => {
 
         res.redirect('/dashboard?c=2');
     } catch (e) {
-        handleException(e, res);
+        handleError(e, res);
     }
 }
 
@@ -99,7 +99,7 @@ controller.changeEmail = async (req, res) => {
 
         res.redirect('/dashboard?c=2');
     } catch (e) {
-        handleException(e, res);
+        handleError(e, res);
     }
 }
 

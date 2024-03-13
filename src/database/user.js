@@ -155,7 +155,9 @@ const getInfo = async (id) => {
         const user = await UserSchema.findOne({ id });
         if (!user) throw { status: 404, message: 'User not found' };
 
-        return { currentUsage: user.currentUsage, maxUsage: user.maxUsage };
+        const token = user.token ? true : false;
+
+        return { currentUsage: user.currentUsage, maxUsage: user.maxUsage, token };
     } catch (e) {
         throw e;
     }
