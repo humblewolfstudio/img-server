@@ -1,0 +1,26 @@
+version: '2.1'
+services:
+  nodejs:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    container_name: erfon_backend
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.imgserver.rule=Host(`cm.capicua.org.es`)"
+      - "traefik.http.routers.imgserver.entrypoints=websecure"
+      - "traefik.http.routers.imgserver.tls.certresolver=letsencrypt"
+      - "traefik.http.services.imgserver.loadbalancer.server.port=3000"
+    networks:
+      - traefik-global-proxy
+      - backend
+    mem_limit: 300m
+    mem_reservation: 100m
+
+networks:
+  traefik-global-proxy:
+    external: true
+  backend:
+    driver: bridge
+
