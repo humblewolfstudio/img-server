@@ -1,3 +1,10 @@
+html, body {
+    /* fallback for older browsers */
+    background-color: #d1eaff;
+    /* Gradient */
+    background-image: radial-gradient(circle, #cbd9e8 0%, #d1eaff 100%);
+}
+
 @media only screen and (min-width: 600px) {
 
     html,
@@ -13,7 +20,9 @@
 }
 
 @media only screen and (max-width: 600px) {
-
+    html, body {
+        height: 100%;
+    }
     .content {
         padding-inline: 15px;
     }

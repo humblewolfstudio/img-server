@@ -86,14 +86,16 @@
             <%- include('../partials/dashboard-profile'); %>
           </div>
           <div id="content3" class="content" style="display: none;">
-            <h2 class="mb-1">Token</h2>
-            <p class="mb-5">Here you can generate (or regenerate if already generated) your token for your app usage</p>
-            <div class="d-flex flex-column justify-content-center align-items-start" id="tokenWrapper">
-              <% if (userInfo.token) { %>
-              <button class="btn btn-primary" onClick="apiKey()">Regenerate API key</button>
-              <% } else { %>
-              <button class="btn btn-primary" onClick="apiKey()">Get API key</button>
-              <% } %>
+            <div class="bg-light p-2" style="border-radius: 10px;">
+              <h2 class="mb-1">Token</h2>
+              <p class="mb-5">Here you can generate (or regenerate if already generated) your token for your app usage</p>
+              <div class="d-flex flex-column justify-content-center align-items-start" id="tokenWrapper">
+                <% if (userInfo.token) { %>
+                <button class="btn btn-primary" onClick="apiKey()">Regenerate API key</button>
+                <% } else { %>
+                <button class="btn btn-primary" onClick="apiKey()">Get API key</button>
+                <% } %>
+              </div>
             </div>
           </div>
         </div>
