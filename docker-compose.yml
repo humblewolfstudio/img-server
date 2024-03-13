@@ -4,11 +4,11 @@ services:
     build:
       context: ./
       dockerfile: dockerfile
-    container_name: erfon_backend
+    container_name: imgserver_backend
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.imgserver.rule=Host(`cm.capicua.org.es`)"
+      - "traefik.http.routers.imgserver.rule=Host(`img.capicua.org.es`)"
       - "traefik.http.routers.imgserver.entrypoints=websecure"
       - "traefik.http.routers.imgserver.tls.certresolver=letsencrypt"
       - "traefik.http.services.imgserver.loadbalancer.server.port=3000"
