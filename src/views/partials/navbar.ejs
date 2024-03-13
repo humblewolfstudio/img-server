@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">IMG Server</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link <%= pageTitle === 'IMG Server' && 'active' %>" aria-current="page"
+                        href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%= pageTitle === 'Documentation' && 'active' %>" href="/docs">Documentation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%= pageTitle === 'Contact' && 'active' %>" href="/contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%= pageTitle === 'About' && 'active' %>" href="/about">About</a>
+                </li>
+            </ul>
+            <% if (user) { %>
+                <div class="dropdown">
+                    <a class="btn btn-primary rounded-circle d-flex justify-content-center align-items-center" href="#"
+                        role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" style="width: 50px; height: 50px;">
+                        <i class="fas fa-user" style="font-size: 24px;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                        <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="/api/users/logout">Logout</a></li>
+                      </ul>
+                      <!--
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start"
+                        aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
+                        <a class="dropdown-item" href="/api/users/logout">Logout</a>
+                    </div>-->
+                </div>
+                <% } else { %>
+                    <a class="navbar-brand" href="/login">Login</a>
+                    <% } %>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,10 @@
+html,
+body {
+    height: 100%;
+    margin-inline: 200px;
+    padding: 0;
+}
+
+.content {
+    padding-inline: 30px;
+}

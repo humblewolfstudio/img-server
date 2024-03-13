@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    .full-height-container {
+        min-height: 90vh;
+    }
+
+    .menu-item {
+        cursor: pointer;
+    }
+
+    .menu-item.active {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
+
+<body class="">
+    <div><%- include('../partials/navbar'); %></div>
+    <div class="container-fluid full-height-container">
+        <div class="row full-height-container">
+            <div class="col-3 pt-5">
+                <ul class="list-group">
+                    <li class="list-group-item menu-item" data-target="content1">Usage/Images</li>
+                    <li class="list-group-item menu-item" data-target="content2">Profile</li>
+                    <li class="list-group-item menu-item" data-target="content3">Token</li>
+                </ul>
+            </div>
+            <div class="col-9 pt-5">
+                <div id="content1" class="content" style="display: none;">
+                    <%- include('../partials/dashboard-usage'); %>
+                        <%- include('../partials/dashboard-modal'); %>
+                            <%- include('../partials/dashboard-confirmationModal'); %>
+                                <div class="mt-5 d-flex justify-content-between align-items-center">
+                                    <h2>Images</h2>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#uploadModal">
+                                        Upload Image
+                                    </button>
+                                </div>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Content-Type</th>
+                                            <th scope="col">Timestamp</th>
+                                            <th scope="col">Size</th>
+                                            <th scope="col">Link</th>
+                                            <th scope="col">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i=0; i < imagesInfo.length; i++) { %>
+                                            <tr>
+                                                <td>
+                                                    <%= imagesInfo[i].name %>
+                                                </td>
+                                                <td>
+                                                    <%= imagesInfo[i].contentType %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(imagesInfo[i].timestamp).toLocaleString(); %>
+                                                </td>
+                                                <td>
+                                                    <%= helper.bytesToKilobytes(imagesInfo[i].size) %>Kb
+                                                </td>
+                                                <td>
+                                                    <a href="/api/image/<%= imagesInfo[i].id %>" target="_blank"
+                                                        rel="noopener noreferrer">View</a>
+                                                </td>
+                                                <td>
+                                                    <a href="#" data-toggle="modal" data-target="#confirmationModal"
+                                                        data-id="<%= imagesInfo[i].id %>">Delete</a>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                    </tbody>
+                                </table>
+                                <ul class="pagination d-flex justify-content-between">
+                                    <li class="page-item"><a class="page-link"
+                                            href="/dashboard?c=1&s=<%= skip-10<0 ? 0 : skip - 10 %>">Previous</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                            href="/dashboard?c=1&s=<%= end ? skip : skip + 10 %>">Next</a></li>
+                                </ul>
+                </div>
+                <div id="content2" class="content" style="display: none;">
+                    <%- include('../partials/dashboard-profile'); %>
+                </div>
+                <div id="content3" class="content" style="display: none;">
+                    <h2>Content 3</h2>
+                    <p>This is the content for section 3.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        $('.menu-item').click(function () {
+            $('.content').hide();
+
+            $('.menu-item').removeClass('active');
+            $(this).addClass('active');
+
+            $('#' + $(this).data('target')).show();
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const params = new URLSearchParams(window.location.search);
+        const contentToShow = params.get('c');
+
+        const contents = document.querySelectorAll('.content');
+
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        if (contentToShow) {
+            const targetContent = document.getElementById(`content${contentToShow}`);
+            const targetMenuItem = document.querySelector(`.menu-item[data-target="content${contentToShow}"]`);
+
+            if (targetContent && targetMenuItem) {
+                targetContent.style.display = 'block';
+                targetMenuItem.classList.add('active');
+            } else {
+                selectDefault();
+            }
+        } else {
+            selectDefault();
+        }
+    });
+
+    const selectDefault = () => {
+        const content = document.querySelector('.content');
+        const menuItem = document.querySelector('.menu-item');
+
+        content.style.display = 'block';
+        menuItem.classList.add('active');
+    }
+</script>
+
+</html>
