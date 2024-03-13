@@ -22,5 +22,6 @@ networks:
   traefik-global-proxy:
     external: true
   backend:
-    external: true
+    external:
+      name: backend
 
