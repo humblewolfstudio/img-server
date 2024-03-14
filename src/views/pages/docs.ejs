@@ -22,10 +22,20 @@
     <p>Keep in mind that once you've generated a token, you have to store it somewhere safe, because it wont be visible ever again. You'll have to <a href="#tokenRegeneration">regenerate</a> it to get it again.</p>
 
     <h2>Basic POST</h2>
-    <p>For the moment, the only way to upload an image is via POST request, this can be achieved by most languages/frameworks</p>
-    <pre><code>curl --location 'https://img.capicua.org.es/api/image/upload/' \
-      --header 'Authorization: API_TOKEN' \
-      --form 'image=@"path/to/image"'</code></pre>
+    <p>For the moment, the only way to upload an image (that is not from the dashboard) is via POST request, this can be achieved by most languages/frameworks</p>
+    <pre>
+      <code>
+        curl --location 'https://img.capicua.org.es/api/image/upload/' --header 'Authorization: API_TOKEN' --form 'image=@"path/to/image"'
+      </code>
+    </pre>
+
+    <h2>Basic GET</h2>
+    <p>You can also get the image that has been posting via its id from this</p>
+    <pre>
+      <code>
+        curl --location 'https://img.capicua.org.es/api/image/IMAGE_UUID'
+      </code>
+    </pre>
 
     <h2 id="tokenRegeneration">Token Regeneration</h2>
     <p>For security reasons you can only view the token the first time. After that, you'll have to regenerate it every time you dont have it, making the previous token obsolete.</p>
