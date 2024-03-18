@@ -1,7 +1,6 @@
 const { findImage, saveImage, removeImage } = require("../../database/image");
 const { increaseUsage, canIncreaseUsage } = require("../../database/user");
-const { handleException } = require("../aux");
-const { handleError } = require("../dashboard/helper");
+const { handleException, compressImage } = require("../aux");
 
 const controller = {};
 
@@ -31,8 +30,19 @@ controller.uploadImageDashboard = async (req, res) => {
         const id = req.session.user ? String(req.session.user) : false;
         if (!id) throw { status: 401, message: 'User not authenticated' };
 
+
         if (!req.file) throw { status: 400, message: 'Image not found' };
+        const compress = req.body.compressImage == 'on' ? true : false;
+
+        if (compress) {
+            const { newBuffer, newSize } = await compressImage(req.file.buffer);
+            req.file.size = newSize;
+            req.file.buffer = newBuffer;
+            req.file.mimetype = 'image/webp';
+        }
+
         const size = req.file.size;
+
 
         const canIncrease = await canIncreaseUsage(id, size);
         if (!canIncrease) throw { status: 400, message: 'Cannot add image: Maximum usage reached' };
@@ -45,7 +55,7 @@ controller.uploadImageDashboard = async (req, res) => {
 
         return res.redirect('/dashboard?c=1')
     } catch (e) {
-        handleError(e, res);
+        handleException(e, res);
     }
 }
 

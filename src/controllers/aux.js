@@ -1,3 +1,5 @@
+const sharp = require('sharp');
+
 const handleException = (e, res) => {
     if (e.status) {
         res.status(e.status).send(e.message);
@@ -22,4 +24,12 @@ const handleError = (e, res) => {
     res.render('error', data);
 }
 
-module.exports = { handleException, handleError }
+const compressImage = async (buffer) => {
+    const newBuffer = await sharp(buffer)
+        .webp()
+        .toBuffer();
+    const newSize = Buffer.byteLength(newBuffer);
+    return { newBuffer, newSize }
+}
+
+module.exports = { handleException, handleError, compressImage }
