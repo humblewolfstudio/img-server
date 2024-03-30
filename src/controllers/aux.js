@@ -32,4 +32,10 @@ const compressImage = async (buffer) => {
     return { newBuffer, newSize }
 }
 
-module.exports = { handleException, handleError, compressImage }
+const isImage = (mimetype) => {
+    const partitioned = mimetype.split('/');
+
+    return partitioned[0] == 'image';
+}
+
+module.exports = { handleException, handleError, compressImage, isImage }

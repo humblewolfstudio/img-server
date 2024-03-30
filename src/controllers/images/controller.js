@@ -1,6 +1,6 @@
 const { findImage, saveImage, removeImage } = require("../../database/image");
 const { increaseUsage, canIncreaseUsage } = require("../../database/user");
-const { handleException, compressImage } = require("../aux");
+const { handleException, compressImage, isImage } = require("../aux");
 
 const controller = {};
 
@@ -31,10 +31,10 @@ controller.uploadImageDashboard = async (req, res) => {
         if (!id) throw { status: 401, message: 'User not authenticated' };
 
 
-        if (!req.file) throw { status: 400, message: 'Image not found' };
+        if (!req.file) throw { status: 400, message: 'File not found' };
         const compress = req.body.compressImage == 'on' ? true : false;
 
-        if (compress) {
+        if (compress && isImage(req.file.mimetype)) {
             const { newBuffer, newSize } = await compressImage(req.file.buffer);
             req.file.size = newSize;
             req.file.buffer = newBuffer;
@@ -45,7 +45,7 @@ controller.uploadImageDashboard = async (req, res) => {
 
 
         const canIncrease = await canIncreaseUsage(id, size);
-        if (!canIncrease) throw { status: 400, message: 'Cannot add image: Maximum usage reached' };
+        if (!canIncrease) throw { status: 400, message: 'Cannot add file: Maximum usage reached' };
 
         await increaseUsage(id, size);
         const contentType = req.file.mimetype;
@@ -66,7 +66,7 @@ controller.deleteImageDashboard = async (req, res) => {
 
         const imageId = req.params.imageId ? String(req.params.imageId) : false;
 
-        if (!imageId) throw { status: 400, message: 'Image ID not found in request' };
+        if (!imageId) throw { status: 400, message: 'File ID not found in request' };
 
         await removeImage(id, imageId);
 

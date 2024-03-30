@@ -18,10 +18,10 @@ const MAX_FILE_SIZE = 12000000;
 
 const upload = multer({ storage, limits: { fileSize: MAX_FILE_SIZE } });
 
-router.post('/upload', authenticationMiddleware, uploadEndpoints, upload.single('image'), controller.uploadImage);
+router.post('/upload', authenticationMiddleware, uploadEndpoints, upload.single('file'), controller.uploadImage);
 router.get('/:id', controller.getImage);
 
-router.post('/dashboardUpload', uploadEndpoints, upload.single('image'), controller.uploadImageDashboard);
+router.post('/dashboardUpload', uploadEndpoints, upload.single('file'), controller.uploadImageDashboard);
 router.get('/dashboardDelete/:imageId', controller.deleteImageDashboard);
 
 

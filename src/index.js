@@ -39,7 +39,7 @@ app.use(session({
 }));
 
 app.use('/', dashboardRouter);
-app.use('/api/image', imagesRouter);
+app.use('/api/file', imagesRouter);
 app.use('/api/users', usersRouter);
 
 

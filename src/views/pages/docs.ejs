@@ -18,22 +18,22 @@
   <div class="content">
     <h1>Getting started</h1>
     <p>The first step is create an account <a href="/register">here</a></p>
-    <p>Then you have two options, you can upload the images directly from the <a href="/dashboard">dashboard</a> or you can use the <a href="/dashboard?c=3">token generator</a> to get an API Key and upload your images programatically.</p>
+    <p>Then you have two options, you can upload the files directly from the <a href="/dashboard">dashboard</a> or you can use the <a href="/dashboard?c=3">token generator</a> to get an API Key and upload your files programatically.</p>
     <p>Keep in mind that once you've generated a token, you have to store it somewhere safe, because it wont be visible ever again. You'll have to <a href="#tokenRegeneration">regenerate</a> it to get it again.</p>
 
     <h2>Basic POST</h2>
-    <p>For the moment, the only way to upload an image (that is not from the dashboard) is via POST request, this can be achieved by most languages/frameworks</p>
+    <p>For the moment, the only way to upload a file (that is not from the dashboard) is via POST request, this can be achieved by most languages/frameworks</p>
     <pre>
       <code>
-        curl --location 'https://img.capicua.org.es/api/image/upload/' --header 'Authorization: API_TOKEN' --form 'image=@"path/to/image"'
+        curl --location 'https://img.capicua.org.es/api/file/upload/' --header 'Authorization: API_TOKEN' --form 'file=@"path/to/file"'
       </code>
     </pre>
 
     <h2>Basic GET</h2>
-    <p>You can also get the image that has been posting via its id from this</p>
+    <p>You can also get the file that has been posting via its id from this</p>
     <pre>
       <code>
-        curl --location 'https://img.capicua.org.es/api/image/IMAGE_UUID'
+        curl --location 'https://img.capicua.org.es/api/file/{FILE_UUID}'
       </code>
     </pre>
 

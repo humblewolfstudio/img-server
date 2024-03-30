@@ -1,8 +1,8 @@
 <div class="bg-light p-2 mt-5" style="border-radius: 10px;">
   <div class="mt-5 d-flex justify-content-between align-items-center">
-    <h2>Images</h2>
+    <h2>Files</h2>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
-      Upload Image
+      Upload File
     </button>
   </div>
   <div class="table-container">
@@ -34,7 +34,7 @@
             <%= helper.bytesToKilobytes(imagesInfo[i].size) %>Kb
           </td>
           <td>
-            <a href="/api/image/<%= imagesInfo[i].id %>" target="_blank" rel="noopener noreferrer">View</a>
+            <a href="/api/file/<%= imagesInfo[i].id %>" target="_blank" rel="noopener noreferrer">View</a>
           </td>
           <td>
             <a href="#" data-toggle="modal" data-target="#confirmationModal" data-id="<%= imagesInfo[i].id %>">Delete</a>
