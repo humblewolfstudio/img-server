@@ -30,16 +30,24 @@ const imageSchema = new Schema({
     contentType: {
         type: String,
         required: true
+    },
+    width: {
+        type: Number,
+        required: true
+    },
+    heigt: {
+        type: Number,
+        required: true
     }
 });
 
 const ImageSchema = model('Image', imageSchema, 'Images');
 
-const saveImage = async (userId, data, contentType, size, name) => {
+const saveImage = async (userId, data, contentType, size, name, width, heigt) => {
     try {
         const id = uuid.v4();
         const timestamp = Date.now();
-        await ImageSchema.create({ id, userId, data, contentType, timestamp, size, name });
+        await ImageSchema.create({ id, userId, data, contentType, timestamp, size, name, width, heigt });
         return id;
     } catch (e) {
         throw e;

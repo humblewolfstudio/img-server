@@ -40,7 +40,7 @@ controller.uploadImage = async (req, res) => {
         const contentType = req.file.mimetype;
         const data = req.file.buffer;
         const name = getNameWithoutExtension(req.file.originalname);
-        const imageId = await saveImage(id, data, contentType, size, name);
+        const imageId = await saveImage(id, data, contentType, size, name, imageWidth, imageHeight);
 
         return res.status(200).send({ id: imageId, height: imageHeight, width: imageWidth });
     } catch (e) {
@@ -58,16 +58,23 @@ controller.uploadImageDashboard = async (req, res) => {
         const webp = req.body.webpImage == 'on' ? true : false;
         const compress = req.body.compressImage == 'on' ? true : false;
 
+        let imageWidth;
+        let imageHeight;
+
         if (isImage(req.file.mimetype)) {
             if (webp) {
-                const { newBuffer, newSize } = await convertToWebp(req.file.buffer);
+                const { newBuffer, newSize, width, height } = await convertToWebp(req.file.buffer);
                 req.file.size = newSize;
                 req.file.buffer = newBuffer;
+                imageWidth = width;
+                imageHeight = height;
                 req.file.mimetype = 'image/webp';
             } else if (compress) {
-                const { newBuffer, newSize } = await compressImage(req.file.buffer);
+                const { newBuffer, newSize, width, height } = await compressImage(req.file.buffer);
                 req.file.size = newSize;
                 req.file.buffer = newBuffer;
+                imageWidth = width;
+                imageHeight = height;
             }
         }
 
@@ -81,7 +88,7 @@ controller.uploadImageDashboard = async (req, res) => {
         const contentType = req.file.mimetype;
         const data = req.file.buffer;
         const name = getNameWithoutExtension(req.file.originalname);
-        await saveImage(id, data, contentType, size, name);
+        await saveImage(id, data, contentType, size, name, imageWidth, imageHeight);
 
         return res.redirect('/dashboard?c=1')
     } catch (e) {
@@ -115,6 +122,28 @@ controller.getImage = async (req, res) => {
 
         res.set('Content-Type', image.contentType);
         res.send(image.data);
+    } catch (e) {
+        handleException(e, res);
+    }
+}
+
+controller.getImageInfo = async (req, res) => {
+    try {
+        const imageId = String(req.params.id);
+        const image = await findImage(imageId);
+
+        const imageData = {
+            id: image.id,
+            name: image.name,
+            size: image.size,
+            contentType: image.contentType,
+            dimensions: {
+                width: image.width,
+                height: image.heigt
+            }
+        }
+
+        res.json(imageData);
     } catch (e) {
         handleException(e, res);
     }
