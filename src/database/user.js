@@ -30,7 +30,7 @@ const userSchema = new Schema({
     }
 });
 
-const defaultMaxUsage = 524288000; //500MB -> bytes
+const defaultMaxUsage = 1073741824; // 1GB -! bytes //524288000; //500MB -> bytes
 
 const UserSchema = model('User', userSchema, 'Users');
 
