@@ -25,6 +25,7 @@ const store = new MongoDBStore({
     collection: 'sessions'
 });
 
+app.set('trust proxy', true);
 app.use(express.static('src/views/public'));
 app.set('views', './src/views/pages');
 app.set('view engine', 'ejs');
