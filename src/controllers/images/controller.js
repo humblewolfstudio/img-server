@@ -1,6 +1,6 @@
 const { findImage, saveImage, removeImage } = require("../../database/image");
 const { increaseUsage, canIncreaseUsage } = require("../../database/user");
-const { handleException, compressImage, isImage } = require("../aux");
+const { handleException, compressImage, isImage, convertToWebp, getNameWithoutExtension } = require("../aux");
 
 const controller = {};
 
@@ -13,13 +13,36 @@ controller.uploadImage = async (req, res) => {
         const canIncrease = await canIncreaseUsage(id, size);
         if (!canIncrease) throw { status: 400, message: 'Cannot add image: Maximum usage reached' };
 
+        let imageWidth;
+        let imageHeight;
+
+        const webp = req.body.webpImage == 'on' ? true : false;
+        const compress = req.body.compressImage == 'on' ? true : false;
+
+        if (isImage(req.file.mimetype)) {
+            if (webp) {
+                const { newBuffer, newSize, width, height } = await convertToWebp(req.file.buffer);
+                req.file.size = newSize;
+                req.file.buffer = newBuffer;
+                imageWidth = width;
+                imageHeight = height;
+                req.file.mimetype = 'image/webp';
+            } else if (compress) {
+                const { newBuffer, newSize, width, height } = await compressImage(req.file.buffer);
+                req.file.size = newSize;
+                req.file.buffer = newBuffer;
+                imageWidth = width;
+                imageHeight = height;
+            }
+        }
+
         await increaseUsage(id, size);
         const contentType = req.file.mimetype;
         const data = req.file.buffer;
-        const name = req.file.originalname;
+        const name = getNameWithoutExtension(req.file.originalname);
         const imageId = await saveImage(id, data, contentType, size, name);
 
-        return res.status(200).send(imageId);
+        return res.status(200).send({ id: imageId, height: imageHeight, width: imageWidth });
     } catch (e) {
         handleException(e, res);
     }
@@ -32,13 +55,20 @@ controller.uploadImageDashboard = async (req, res) => {
 
 
         if (!req.file) throw { status: 400, message: 'File not found' };
+        const webp = req.body.webpImage == 'on' ? true : false;
         const compress = req.body.compressImage == 'on' ? true : false;
 
-        if (compress && isImage(req.file.mimetype)) {
-            const { newBuffer, newSize } = await compressImage(req.file.buffer);
-            req.file.size = newSize;
-            req.file.buffer = newBuffer;
-            req.file.mimetype = 'image/webp';
+        if (isImage(req.file.mimetype)) {
+            if (webp) {
+                const { newBuffer, newSize } = await convertToWebp(req.file.buffer);
+                req.file.size = newSize;
+                req.file.buffer = newBuffer;
+                req.file.mimetype = 'image/webp';
+            } else if (compress) {
+                const { newBuffer, newSize } = await compressImage(req.file.buffer);
+                req.file.size = newSize;
+                req.file.buffer = newBuffer;
+            }
         }
 
         const size = req.file.size;
@@ -50,7 +80,7 @@ controller.uploadImageDashboard = async (req, res) => {
         await increaseUsage(id, size);
         const contentType = req.file.mimetype;
         const data = req.file.buffer;
-        const name = req.file.originalname;
+        const name = getNameWithoutExtension(req.file.originalname);
         await saveImage(id, data, contentType, size, name);
 
         return res.redirect('/dashboard?c=1')
@@ -61,6 +91,7 @@ controller.uploadImageDashboard = async (req, res) => {
 
 controller.deleteImageDashboard = async (req, res) => {
     try {
+        console.log('xd')
         const id = req.session.user ? String(req.session.user) : false;
         if (!id) throw { status: 401, message: 'User not authenticated' };
 

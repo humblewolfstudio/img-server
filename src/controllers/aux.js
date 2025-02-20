@@ -25,11 +25,25 @@ const handleError = (e, res) => {
 }
 
 const compressImage = async (buffer) => {
-    const newBuffer = await sharp(buffer)
+    const image = sharp(buffer);
+    const metadata = await image.metadata();
+
+    const newBuffer = await image
+        .jpeg({ quality: 80 })
+        .toBuffer();
+    const newSize = Buffer.byteLength(newBuffer);
+    return { newBuffer, newSize, width: metadata.width, height: metadata.height }
+}
+
+const convertToWebp = async (buffer) => {
+    const image = sharp(buffer);
+    const metadata = await image.metadata();
+
+    const newBuffer = await image
         .webp()
         .toBuffer();
     const newSize = Buffer.byteLength(newBuffer);
-    return { newBuffer, newSize }
+    return { newBuffer, newSize, width: metadata.width, height: metadata.height }
 }
 
 const isImage = (mimetype) => {
@@ -38,4 +52,8 @@ const isImage = (mimetype) => {
     return partitioned[0] == 'image';
 }
 
-module.exports = { handleException, handleError, compressImage, isImage }
+const getNameWithoutExtension = (name) => {
+    return name.split('.').slice(0, -1).join('.');
+}
+
+module.exports = { handleException, handleError, compressImage, convertToWebp, isImage, getNameWithoutExtension }

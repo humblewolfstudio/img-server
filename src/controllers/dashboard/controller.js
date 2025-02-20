@@ -64,7 +64,7 @@ controller.dashboard = async (req, res) => {
 
         const userInfo = await getInfo(id);
         const { imagesInfo, end } = await getImagesInfo(id, skip);
-
+        console.log(imagesInfo)
         const data = {
             pageTitle: 'Dashboard',
             user: req.session.user,
