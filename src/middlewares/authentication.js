@@ -7,7 +7,7 @@ const authenticationMiddleware = async (req, res, next) => {
     }
     try {
         const user = await authenticateUser(auth);
-        req.userId = user;
+        req.user = user;
         next();
     } catch (e) {
         if (e.status) {

@@ -98,7 +98,7 @@ controller.uploadImageDashboard = async (req, res) => {
 
 controller.deleteImage = async (req, res) => {
     try {
-        const id = req.session.user ? String(req.session.user) : false;
+        const id = req.user ? String(req.user) : false;
         if (!id) throw { status: 401, message: 'User not authenticated' };
 
         const imageId = req.params.id ? String(req.params.id) : false;
@@ -145,7 +145,7 @@ controller.getImage = async (req, res) => {
 
 controller.getImageInfo = async (req, res) => {
     try {
-        const id = req.session.user ? String(req.session.user) : false;
+        const id = req.user ? String(req.user) : false;
         if (!id) throw { status: 401, message: 'User not authenticated' };
 
         const imageId = String(req.params.id);
