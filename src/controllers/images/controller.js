@@ -42,7 +42,7 @@ controller.uploadImage = async (req, res) => {
         const name = getNameWithoutExtension(req.file.originalname);
         const imageId = await saveImage(id, data, contentType, size, name, imageWidth, imageHeight);
 
-        return res.status(200).send({ id: imageId, name, size, contentType, dimensions: { height: imageHeight, width: imageWidth } });
+        return res.status(200).json({ id: imageId, name, size, contentType, dimensions: { height: imageHeight, width: imageWidth } });
     } catch (e) {
         handleException(e, res);
     }
@@ -96,9 +96,25 @@ controller.uploadImageDashboard = async (req, res) => {
     }
 }
 
+controller.deleteImage = async (req, res) => {
+    try {
+        const userId = req.session.user ? String(req.session.user) : false;
+        if (!userId) throw { status: 401, message: 'User not authenticated' };
+
+        const id = req.params.id ? String(req.params.id) : false;
+
+        if (!id) throw { status: 400, message: 'File ID not found in request' };
+
+        await removeImage(userId, id);
+
+        return res.json({ deleted: true });
+    } catch (e) {
+        handleError(e, res);
+    }
+}
+
 controller.deleteImageDashboard = async (req, res) => {
     try {
-        console.log('xd')
         const id = req.session.user ? String(req.session.user) : false;
         if (!id) throw { status: 401, message: 'User not authenticated' };
 
