@@ -98,14 +98,14 @@ controller.uploadImageDashboard = async (req, res) => {
 
 controller.deleteImage = async (req, res) => {
     try {
-        const userId = req.session.user ? String(req.session.user) : false;
-        if (!userId) throw { status: 401, message: 'User not authenticated' };
+        const id = req.session.user ? String(req.session.user) : false;
+        if (!id) throw { status: 401, message: 'User not authenticated' };
 
-        const id = req.params.id ? String(req.params.id) : false;
+        const imageId = req.params.id ? String(req.params.id) : false;
 
-        if (!id) throw { status: 400, message: 'File ID not found in request' };
+        if (!imageId) throw { status: 400, message: 'File ID not found in request' };
 
-        await removeImage(userId, id);
+        await removeImage(userId, imageId);
 
         return res.json({ deleted: true });
     } catch (e) {
@@ -145,6 +145,9 @@ controller.getImage = async (req, res) => {
 
 controller.getImageInfo = async (req, res) => {
     try {
+        const id = req.session.user ? String(req.session.user) : false;
+        if (!id) throw { status: 401, message: 'User not authenticated' };
+
         const imageId = String(req.params.id);
         const image = await findImage(imageId);
 
