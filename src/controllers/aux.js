@@ -46,6 +46,13 @@ const convertToWebp = async (buffer) => {
     return { newBuffer, newSize, width: metadata.width, height: metadata.height }
 }
 
+const noConvert = async (buffer) => {
+    const image = sharp(buffer);
+    const metadata = await image.metadata();
+
+    return { width: metadata.width, height: metadata.height }
+}
+
 const isImage = (mimetype) => {
     const partitioned = mimetype.split('/');
 
@@ -56,4 +63,4 @@ const getNameWithoutExtension = (name) => {
     return name.split('.').slice(0, -1).join('.');
 }
 
-module.exports = { handleException, handleError, compressImage, convertToWebp, isImage, getNameWithoutExtension }
+module.exports = { handleException, handleError, compressImage, convertToWebp, noConvert, isImage, getNameWithoutExtension }

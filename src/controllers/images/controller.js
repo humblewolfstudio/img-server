@@ -1,23 +1,23 @@
 const { findImage, saveImage, removeImage } = require("../../database/image");
 const { increaseUsage, canIncreaseUsage } = require("../../database/user");
-const { handleException, compressImage, isImage, convertToWebp, getNameWithoutExtension } = require("../aux");
+const { handleException, compressImage, isImage, convertToWebp, getNameWithoutExtension, noConvert } = require("../aux");
 
 const controller = {};
 
 controller.uploadImage = async (req, res) => {
     try {
         if (!req.file) return res.status(400).send('There has to be an image with the post');
-        
+
         const id = req.user ? String(req.user) : false;
         if (!id) throw { status: 401, message: 'User not authenticated' };
-        
+
         const size = req.file.size;
 
         const canIncrease = await canIncreaseUsage(id, size);
         if (!canIncrease) throw { status: 400, message: 'Cannot add image: Maximum usage reached' };
 
-        let imageWidth;
-        let imageHeight;
+        let imageWidth = 0;
+        let imageHeight = 0;
 
         const webp = req.body.webpImage == 'on' ? true : false;
         const compress = req.body.compressImage == 'on' ? true : false;
@@ -34,6 +34,10 @@ controller.uploadImage = async (req, res) => {
                 const { newBuffer, newSize, width, height } = await compressImage(req.file.buffer);
                 req.file.size = newSize;
                 req.file.buffer = newBuffer;
+                imageWidth = width;
+                imageHeight = height;
+            } else {
+                const { width, height } = await noConvert(req.file.buffer);
                 imageWidth = width;
                 imageHeight = height;
             }
@@ -61,8 +65,8 @@ controller.uploadImageDashboard = async (req, res) => {
         const webp = req.body.webpImage == 'on' ? true : false;
         const compress = req.body.compressImage == 'on' ? true : false;
 
-        let imageWidth;
-        let imageHeight;
+        let imageWidth = 0;
+        let imageHeight = 0;
 
         if (isImage(req.file.mimetype)) {
             if (webp) {
@@ -76,6 +80,10 @@ controller.uploadImageDashboard = async (req, res) => {
                 const { newBuffer, newSize, width, height } = await compressImage(req.file.buffer);
                 req.file.size = newSize;
                 req.file.buffer = newBuffer;
+                imageWidth = width;
+                imageHeight = height;
+            } else {
+                const { width, height } = await noConvert(req.file.buffer);
                 imageWidth = width;
                 imageHeight = height;
             }
