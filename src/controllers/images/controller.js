@@ -7,7 +7,10 @@ const controller = {};
 controller.uploadImage = async (req, res) => {
     try {
         if (!req.file) return res.status(400).send('There has to be an image with the post');
-        const id = req.userId;
+        
+        const id = req.user ? String(req.user) : false;
+        if (!id) throw { status: 401, message: 'User not authenticated' };
+        
         const size = req.file.size;
 
         const canIncrease = await canIncreaseUsage(id, size);
