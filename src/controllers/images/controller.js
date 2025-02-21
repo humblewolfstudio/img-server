@@ -42,7 +42,7 @@ controller.uploadImage = async (req, res) => {
         const name = getNameWithoutExtension(req.file.originalname);
         const imageId = await saveImage(id, data, contentType, size, name, imageWidth, imageHeight);
 
-        return res.status(200).send({ id: imageId, height: imageHeight, width: imageWidth });
+        return res.status(200).send({ id: imageId, name, size, contentType, dimensions: { height: imageHeight, width: imageWidth } });
     } catch (e) {
         handleException(e, res);
     }
