@@ -1,6 +1,6 @@
 const { findImage, saveImage, removeImage } = require("../../database/image");
 const { increaseUsage, canIncreaseUsage } = require("../../database/user");
-const { handleException, compressImage, isImage, convertToWebp, getNameWithoutExtension, noConvert } = require("../aux");
+const { handleException, compressImage, isImage, convertToWebp, getNameWithoutExtension, noConvert, handleError } = require("../aux");
 
 const controller = {};
 
