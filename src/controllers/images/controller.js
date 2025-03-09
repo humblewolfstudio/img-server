@@ -116,7 +116,7 @@ controller.deleteImage = async (req, res) => {
 
         if (!imageId) throw { status: 400, message: 'File ID not found in request' };
 
-        await removeImage(userId, imageId);
+        await removeImage(id, imageId);
 
         return res.json({ deleted: true });
     } catch (e) {
